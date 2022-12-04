@@ -6,6 +6,7 @@ const helmet = require('helmet')
 const monosanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
+const compression = require("compression")
 const cookieParser = require('cookie-parser')
 
 const tourRouter = require('./routes/tourRoutes');
@@ -18,6 +19,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 1) MIDDLEWARES
+app.use(compression())
 app.use(helmet())
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));

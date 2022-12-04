@@ -22,7 +22,7 @@ if(userdataform) userdataform.addEventListener('submit', e=>{
     // console.log("ezsd");
 })
 if(userdatapassword) userdatapassword.addEventListener('submit',async e=>{
-    console.log("hey")
+    // console.log("hey")
     e.preventDefault()
     document.querySelector('.btn--save-password').textContent = "Updating...."
     const passwordCurrent = document.getElementById('password-current').value

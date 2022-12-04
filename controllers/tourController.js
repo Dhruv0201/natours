@@ -13,7 +13,7 @@ exports.top5tour = (req, res, next) => {
 // );
 
 exports.checkID = (req, res, next, val) => {
-  console.log(`Tour id is: ${val}`);
+  // console.log(`Tour id is: ${val}`);
 
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
@@ -133,7 +133,7 @@ exports.monthlyPlan = async (req,res)=>{
 exports.getTourWithin= async (req,res,next) =>{
  try {const {distance,latlng,unit} = req.params
   const [lat,lng] = latlng.split(',')
-  console.log(lat,lng,distance)
+  // console.log(lat,lng,distance)
   if(!lat || !lng){
     res.status(404).json({
       message:'Please Provide lat lng'
@@ -161,7 +161,7 @@ exports.getdistance= async (req,res,next) =>{
   try{
     const {latlng,unit} = req.params
     const [lat,lng] = latlng.split(',')
-    console.log(lat,lng)
+    // console.log(lat,lng)
     if(!lat || !lng){
       res.status(404).json({
         message:'Please Provide lat lng'
