@@ -2,8 +2,9 @@
 const util = require('util')
 const jwt = require('jsonwebtoken');
 const User = require('./../models/userModel');
+const Email = require('../utils/email')
 
-const sendmail = require('../utils/email')
+// const sendmail = require('../utils/email')
 // const sendEmail = require('./../utils/email');
 const crypto = require('crypto')
 const {Document} = require("mongoose")
@@ -30,12 +31,19 @@ const CreateSendToken = async (user,statusCode,res) =>{
     
 }
     exports.signup = async (req,res,next) =>{
-       try{ const newUser = await User.create({
+        // console.log("jsdv")
+       try{ const newUser = await User.create(
+        {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm
-       });
+    
+       }
+       );
+       const url= `${req.protocol}://${req.get('host')}/me`
+    //    console.log(url)
+       await new Email (newUser,url).sendWelcome()
        CreateSendToken (newUser,201,res);
         
        }
@@ -180,16 +188,15 @@ exports.isLoggedIn = async (req,res,next) => {
     
 
 exports.restrictTo = (...roles) => {
-    return(req,res,next )=>{
+    return (req,res,next )=>{
         if(!roles.includes(req.user.role)){
-                res.status(403)
-                res.json( 
+              res.json( 
                     {
                         status:'fail',
                         detail:"not authorized" })
             
         }
-        next()
+         next()
     }
 }
 exports.forgotPassword = async (req,res,next)=>{
@@ -205,14 +212,10 @@ exports.forgotPassword = async (req,res,next)=>{
     const resetToken = finduser.createResetPasswordToken()
     await finduser.save({validateBeforeSave:false})
     // console.log(resetToken);
-    const resetURL= `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-    const message=`submit a patch request on ${resetURL} with your new password and confirm password to reset your password.`;
     try{
-        await sendmail ({
-            email:finduser.email,
-            subject:"Reset Your Password",
-            message
-        })
+        const resetURL= `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+      
+        await new Email (finduser,resetURL).sendresetPassword()
         res.status(200).json({
             status:"Success"
         })
