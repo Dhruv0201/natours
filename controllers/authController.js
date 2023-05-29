@@ -261,11 +261,16 @@ exports.resetpassword=async (req,res,next)=>
 
 }
 exports.updatePassword = async function (req,res,next) {
-    console.log("SDvsDCV")
-    try {const user = await User.findById(req.user.id).select('+password');
     
+    try {const user = await User.findById(req.user.id).select('+password');
+            console.log(await user.correctPassword);
+            // console.log(user.password)
+            console.log(req.body)
 
-    if(!(await user.correctPassword (req.body.CurrentPassword,user.password))){
+        
+
+    if(!(await user.correctPassword(req.body.passwordCurrent,user.password))){
+        console.log("hey")
         return res.status(400).json({
             status:'Current Password is Wrong'
         }
@@ -273,7 +278,9 @@ exports.updatePassword = async function (req,res,next) {
     
     }
     user.password = req.body.password,
-    user.passwordConfirm = req.body.passwordConfirm
+    console.log(user.password)
+    user.passwordConfirm = req.body.confirmPassword
+    console.log(user.confirmPassword)
     await user.save()
     CreateSendToken(user,200,res)
 }
